@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name: Art Frontend Create Posts
  * Plugin URI: wpruse.ru
@@ -15,3 +16,15 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+define( 'AFCP_DIR', plugin_dir_path( __FILE__ ) );
+define( 'AFCP_URI', plugin_dir_url( __FILE__ ) );
+
+require AFCP_DIR . 'includes/class-afcp-core.php';
+
+function afcp() {
+
+	return AFCP_Core::instance();
+}
+
+afcp();
