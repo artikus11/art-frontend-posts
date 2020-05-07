@@ -8,6 +8,8 @@ class AFCP_Core {
 	public function __construct() {
 
 		$this->hooks();
+
+		$this->includes();
 	}
 
 
@@ -18,6 +20,14 @@ class AFCP_Core {
 		add_action( 'init', [ $this, 'register_cpt_event' ] );
 		add_action( 'init', [ $this, 'register_tax_topics' ] );
 		add_action( 'init', [ $this, 'register_tax_hashtags' ] );
+
+	}
+
+
+	public function includes() {
+
+		require_once AFCP_DIR . 'includes/class-afcp-shortcode.php';
+		new AFCP_Shortcode();
 
 	}
 
