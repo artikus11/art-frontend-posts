@@ -83,7 +83,7 @@ class AFCP_Shortcode {
 				'label' => 'Миниатюра мероприятия',
 			],
 			'event_date'         => [
-				'type'  => 'text',
+				'type'  => 'datepicker',
 				'label' => 'Дата мероприятия',
 			],
 			'event_location'     => [
@@ -203,6 +203,46 @@ class AFCP_Shortcode {
 				$field .= '<input type="' . esc_attr( $args['type'] ) . '" class="input-text ' . esc_attr( implode( ' ', $args['input_class'] ) ) . '" name="' . esc_attr( $key ) .
 				          '" id="' . esc_attr( $args['id'] ) . '" placeholder="' . esc_attr( $args['placeholder'] ) . '"  value="' . esc_attr( $value ) . '" ' .
 				          implode( ' ', $custom_attributes ) . ' />';
+
+				break;
+			case 'datepicker':
+				wp_enqueue_script('jquery-ui-datepicker');
+				wp_enqueue_style('jqueryui', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css', false, null );
+
+				$field .= '<input type="text" class="datepicker ' . esc_attr( implode( ' ', $args['input_class'] ) ) . '" name="' . esc_attr( $key ) .
+				          '" id="' . esc_attr( $args['id'] ) . '" placeholder="' . esc_attr( $args['placeholder'] ) . '"  value="' . esc_attr( $value ) . '" ' .
+				          implode( ' ', $custom_attributes ) . ' />';
+
+				$field .= "<script>
+		jQuery(document).ready(function($){
+			'use strict';
+			// настройки по умолчанию. Их можно добавить в имеющийся js файл, 
+			// если datepicker будет использоваться повсеместно на проекте и предполагается запускать его с разными настройками
+			$.datepicker.setDefaults({
+				closeText: 'Закрыть',
+				prevText: '<Пред',
+				nextText: 'След>',
+				currentText: 'Сегодня',
+				monthNames: ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+				monthNamesShort: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
+				dayNames: ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'],
+				dayNamesShort: ['вск','пнд','втр','срд','чтв','птн','сбт'],
+				dayNamesMin: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
+				weekHeader: 'Нед',
+				dateFormat: 'dd-mm-yy',
+				firstDay: 1,
+				showAnim: 'slideDown',
+				isRTL: false,
+				showMonthAfterYear: false,
+				yearSuffix: ''
+			} );
+
+			// Инициализация
+			$('input.datepicker').datepicker({ dateFormat: 'dd.mm.yy' });
+			// можно подключить datepicker с доп. настройками так:
+        
+		});
+		</script>";
 
 				break;
 			case 'select':
