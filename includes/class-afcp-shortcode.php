@@ -10,6 +10,11 @@ class AFCP_Shortcode {
 
 	public function shortcode_form() {
 
+		wp_enqueue_script( 'afcp-script' );
+		wp_enqueue_style( 'afcp-styles' );
+		wp_enqueue_script( 'afcp-select2-script' );
+		wp_enqueue_style( 'afcp-select2-style' );
+
 		ob_start();
 		?>
 		<form action="POST" id="event-form" class="event-form">
@@ -43,9 +48,11 @@ class AFCP_Shortcode {
 				'description' => 'Это обязательное поле. Укажите заголовок мероприятия',
 			],
 			'event_topics'       => [
-				'type'    => 'multiselect',
-				'label'   => 'Категория мероприятия',
-				'options' => $this->get_field_terms(),
+				'type'        => 'multiselect',
+				'label'       => 'Категория мероприятия',
+				'input_class' => ['js-multiselect'],
+				'options'     => $this->get_field_terms(),
+				'description' => 'Выберите нужную категорию',
 			],
 			'event_hashtags'     => [
 				'type'    => 'select',
@@ -220,8 +227,9 @@ class AFCP_Shortcode {
 						$options .= '<option value="' . esc_attr( $option_key ) . '" ' . selected( $value, $option_key, false ) . '>' . esc_attr( $option_text ) . '</option>';
 					}
 
-					$field .= '<select multiple name="' . esc_attr( $key ) . '[]" id="' . esc_attr( $args['id'] ) . '" class="select ' . esc_attr( implode( ' ', $args['input_class'] ) ) .
-					          '" ' . implode( ' ', $custom_attributes ) . ' data-placeholder="' . esc_attr( $args['placeholder'] ) . '">
+					$field .= '<select multiple name="' . esc_attr( $key ) . '[]" id="' . esc_attr( $args['id'] ) . '" class="multiselect ' .
+					          esc_attr( implode( ' ', $args['input_class'] ) ) . '" ' . implode( ' ', $custom_attributes ) . ' data-placeholder="' .
+					          esc_attr( $args['placeholder'] ) . '">
 							' . $options . '
 						</select>';
 				}
