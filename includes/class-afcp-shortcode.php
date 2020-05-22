@@ -37,15 +37,15 @@ class AFCP_Shortcode {
 
 		return [
 			'event_title'        => [
-				'type'     => 'text',
-				'label'    => 'Заголовок мероприятия',
-				'required' => true,
-
+				'type'        => 'text',
+				'label'       => 'Заголовок мероприятия',
+				'required'    => true,
+				'description' => 'Это обязательное поле. Укажите заголовок мероприятия',
 			],
 			'event_topics'       => [
 				'type'    => 'select',
 				'label'   => 'Категория мероприятия',
-				'options' => [],
+				'options' => $this->get_field_terms(),
 			],
 			'event_hashtags'     => [
 				'type'    => 'select',
@@ -305,5 +305,26 @@ class AFCP_Shortcode {
 		}
 
 		return $field;
+	}
+
+
+	public function get_field_terms() {
+
+		$terms = get_terms(
+			[
+				'taxonomy'   => [ 'topics' ],
+				'orderby'    => 'id',
+				'order'      => 'ASC',
+				'hide_empty' => false,
+			]
+		);
+
+		$field_terms = [];
+
+		foreach ( $terms as $term ) {
+			$field_terms[ $term->term_id ] = $term->name;
+		}
+
+		return $field_terms;
 	}
 }
