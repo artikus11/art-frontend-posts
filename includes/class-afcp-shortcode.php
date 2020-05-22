@@ -79,7 +79,7 @@ class AFCP_Shortcode {
 				'value'             => '',
 			],
 			'event_thumbnail'    => [
-				'type'  => 'text',
+				'type'  => 'file',
 				'label' => 'Миниатюра мероприятия',
 			],
 			'event_date'         => [
@@ -198,6 +198,7 @@ class AFCP_Shortcode {
 			case 'number':
 			case 'email':
 			case 'url':
+			case 'file':
 			case 'tel':
 				$field .= '<input type="' . esc_attr( $args['type'] ) . '" class="input-text ' . esc_attr( implode( ' ', $args['input_class'] ) ) . '" name="' . esc_attr( $key ) .
 				          '" id="' . esc_attr( $args['id'] ) . '" placeholder="' . esc_attr( $args['placeholder'] ) . '"  value="' . esc_attr( $value ) . '" ' .
