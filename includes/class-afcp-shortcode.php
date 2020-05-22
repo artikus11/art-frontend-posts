@@ -55,13 +55,28 @@ class AFCP_Shortcode {
 				'description' => 'Выберите нужную категорию',
 			],
 			'event_hashtags'     => [
-				'type'    => 'select',
+				'type'    => 'text',
 				'label'   => 'Метки мероприятия',
-				'options' => [],
+				'description' => 'Укажите метку в виде хештега, в формате #вашаМетка',
 			],
 			'event_descriptions' => [
-				'type'  => 'textarea',
+				'type'  => 'wysiwyg_editor',
 				'label' => 'Описание мероприятия',
+				'description' => 'Напишите о чем, это мероприятие',
+				'custom_attributes' => [
+					'wpautop'          => 1,
+					'media_buttons'    => 0,
+					'textarea_rows'    => 3,
+					'tabindex'         => 0,
+					'editor_css'       => '<style></style>',
+					'editor_class'     => 'form-field',
+					'teeny'            => 1,
+					'dfw'              => 0,
+					'tinymce'          => 1,
+					'quicktags'        => 0,
+					'drag_drop_upload' => 0,
+				],
+				'value'             => '',
 			],
 			'event_thumbnail'    => [
 				'type'  => 'text',
@@ -251,7 +266,7 @@ class AFCP_Shortcode {
 				break;
 			case 'wysiwyg_editor' :
 				wp_localize_script(
-					'afp-script',
+					'afcp-script',
 					'field_editor',
 					[
 						'key' => esc_attr( $key ),
