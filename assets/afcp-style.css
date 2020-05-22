@@ -1,0 +1,43 @@
+.event-form input[type="text"],
+.event-form input[type="email"],
+.event-form input[type="url"],
+.event-form input[type="password"],
+.event-form input[type="search"],
+.event-form input[type="number"],
+.event-form input[type="tel"],
+.event-form input[type="range"],
+.event-form input[type="date"],
+.event-form input[type="month"],
+.event-form input[type="week"],
+.event-form input[type="time"],
+.event-form input[type="datetime"],
+.event-form input[type="datetime-local"],
+.event-form input[type="color"],
+.event-form textarea {
+	width: 100%;
+}
+
+.event-form {
+	display: flex;
+	flex-direction: column;
+}
+
+.event-form p {
+	display: flex;
+	flex-direction: column;
+}
+
+.event-form .required {
+	color: tomato;
+}
+
+.event-form .optional {
+	visibility: hidden;
+}
+
+.event-form .description {
+	font-size: 14px;
+	font-style: italic;
+	color: #4e4e4e;
+	line-height: 1;
+}
