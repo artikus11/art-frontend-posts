@@ -43,7 +43,7 @@ class AFCP_Shortcode {
 				'description' => 'Это обязательное поле. Укажите заголовок мероприятия',
 			],
 			'event_topics'       => [
-				'type'    => 'select',
+				'type'    => 'multiselect',
 				'label'   => 'Категория мероприятия',
 				'options' => $this->get_field_terms(),
 			],
@@ -199,6 +199,28 @@ class AFCP_Shortcode {
 					}
 
 					$field .= '<select name="' . esc_attr( $key ) . '" id="' . esc_attr( $args['id'] ) . '" class="select ' . esc_attr( implode( ' ', $args['input_class'] ) ) .
+					          '" ' . implode( ' ', $custom_attributes ) . ' data-placeholder="' . esc_attr( $args['placeholder'] ) . '">
+							' . $options . '
+						</select>';
+				}
+
+				break;
+			case 'multiselect':
+				$field   = '';
+				$options = '';
+
+				if ( ! empty( $args['options'] ) ) {
+					foreach ( $args['options'] as $option_key => $option_text ) {
+						if ( '' === $option_key ) {
+							if ( empty( $args['placeholder'] ) ) {
+								$args['placeholder'] = $option_text ? $option_text : __( 'Choose an option', 'afp' );
+							}
+							$custom_attributes[] = 'data-allow_clear="true"';
+						}
+						$options .= '<option value="' . esc_attr( $option_key ) . '" ' . selected( $value, $option_key, false ) . '>' . esc_attr( $option_text ) . '</option>';
+					}
+
+					$field .= '<select multiple name="' . esc_attr( $key ) . '[]" id="' . esc_attr( $args['id'] ) . '" class="select ' . esc_attr( implode( ' ', $args['input_class'] ) ) .
 					          '" ' . implode( ' ', $custom_attributes ) . ' data-placeholder="' . esc_attr( $args['placeholder'] ) . '">
 							' . $options . '
 						</select>';
