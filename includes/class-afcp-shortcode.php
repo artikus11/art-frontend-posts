@@ -54,6 +54,7 @@ class AFCP_Shortcode {
 				'label'       => 'Категория мероприятия',
 				'input_class' => ['js-multiselect'],
 				'options'     => $this->get_field_terms(),
+				'required'    => true,
 				'description' => 'Выберите нужную категорию',
 			],
 			'event_hashtags'     => [
@@ -87,10 +88,12 @@ class AFCP_Shortcode {
 			'event_date'         => [
 				'type'  => 'datepicker',
 				'label' => 'Дата мероприятия',
+				'required'    => true,
 			],
 			'event_location'     => [
 				'type'  => 'text',
 				'label' => 'Место мероприятия',
+				'required'    => true,
 			],
 
 		];

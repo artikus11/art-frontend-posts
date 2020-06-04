@@ -12,6 +12,62 @@ class AFCP_Ajax {
 	public function callback() {
 
 		error_log( print_r( $_POST, 1 ) );
+
+		check_ajax_referer( 'afcp-ajax-nonce', 'nonce' );
+
+		$this->validation();
+
 		wp_die();
+	}
+
+
+	public function validation() {
+
+		$error = [];
+
+		$required = [
+			'event_title'        => 'Это обязательное поле. Укажите заголовок мероприятия',
+			'event_topics'       => 'Это обязательное поле. Выберите нужную категорию',
+			//'event_hashtags'     => 'Это обязательное поле. Укажите метку в виде хештега, в формате #вашаМетка',
+			//'event_descriptions' => 'Это обязательное поле. Напишите о чем, это мероприятие',
+			//'event_thumbnail'    => 'Это обязательное поле. Укажите миниатюру мероприятия',
+			'event_date'         => 'Это обязательное поле. Укажите дату мероприятия',
+			'event_location'     => 'Это обязательное поле. Укажите меато проведения мероприятия',
+		];
+
+		foreach ( $required as $key => $item ) {
+
+			if ( empty( $_POST[ $key ] ) || ! isset( $_POST[ $key ] ) ) {
+				$error[ $key ] = $item;
+			}
+		}
+
+		if ( $error ) {
+			$this->error( $error );
+		}
+	}
+
+
+	public function success( $message ) {
+
+		wp_send_json_success(
+			[
+				'response' => 'SUCCESS',
+				'message'  => $message,
+			]
+		);
+
+	}
+
+
+	public function error( $message ) {
+
+		wp_send_json_error(
+			[
+				'response' => 'ERROR',
+				'message'  => $message,
+			]
+		);
+
 	}
 }
