@@ -34,13 +34,38 @@ class AFCP_Ajax {
 			],
 		];
 
-		//error_log( print_r( $event_data, 1 ) );
-
 		$post_id = wp_insert_post( $event_data );
+
+		$this->upload_thumbnail( $post_id );
 
 		$this->set_term( $post_id, $event_data['tax_input'] );
 
 		wp_die();
+	}
+
+
+	public function upload_thumbnail( $post_id ) {
+
+		require_once( ABSPATH . 'wp-admin/includes/image.php' );
+		require_once( ABSPATH . 'wp-admin/includes/file.php' );
+		require_once( ABSPATH . 'wp-admin/includes/media.php' );
+
+		add_filter( 'upload_mimes', function( $mimes ){
+			return [
+				'jpg|jpeg|jpe' => 'image/jpeg',
+				'png'          => 'image/png',
+			];
+		} );
+
+		$attachment_id = media_handle_upload( 'event_thumbnail', $post_id );
+
+		if ( is_wp_error( $attachment_id ) ) {
+			$response_message = 'Ошибка загрузки файла `' . $_FILES['event_thumbnail']['name'] . '`: ' . $attachment_id->get_error_message();
+			$this->error( $response_message );
+		}
+
+		set_post_thumbnail( $post_id, $attachment_id );
+
 	}
 
 
@@ -84,18 +109,12 @@ class AFCP_Ajax {
 		if ( ! empty( $_FILES ) ) {
 			$size     = getimagesize( $_FILES['event_thumbnail']['tmp_name'] );
 			$max_size = 800;
-			$type     = $_FILES['event_thumbnail']['type'];
 
 			if ( $size[0] > $max_size || $size[1] > $max_size ) {
 				$image_message = 'Изображение не может быть больше ' . $max_size . 'рх в высоту или ширину';
 				$this->remove_image( $image_message );
 			}
 
-			if ( 'image/jpeg' !== $type || 'image/png' !== $type ) {
-
-				$image_message = 'Неверный формат файла. Жопускаются только файлы изображений в формате .jpg, .png';
-				$this->remove_image( $image_message );
-			}
 		}
 
 	}
