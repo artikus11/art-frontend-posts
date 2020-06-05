@@ -11,16 +11,44 @@ class AFCP_Ajax {
 
 	public function callback() {
 
-		error_log( print_r( $_FILES, 1 ) );
 
 		check_ajax_referer( 'afcp-ajax-nonce', 'nonce' );
 
-		//$this->validation();
-		if ( ! empty( $_FILES ) ) {
-			$this->validation_thumbnail();
-		}
+		$this->validation();
+
+		$this->validation_thumbnail();
+
+		$event_data = [
+			'post_type'    => 'event',
+			'post_status'  => 'publish',
+			'post_title'   => sanitize_text_field( $_POST['event_title'] ),
+			'post_content' => wp_kses_post( $_POST['event_descriptions'] ),
+			'meta_input'   => [
+				'event_date'     => sanitize_text_field( $_POST['event_date'] ),
+				'event_location' => sanitize_text_field( $_POST['event_location'] ),
+			],
+			'tax_input'    => [
+				'topics'   => $_POST['event_topics'],
+				'hashtags' => explode( ',', sanitize_text_field( $_POST['event_hashtags'] ) ),
+
+			],
+		];
+
+		//error_log( print_r( $event_data, 1 ) );
+
+		$post_id = wp_insert_post( $event_data );
+
+		$this->set_term( $post_id, $event_data['tax_input'] );
 
 		wp_die();
+	}
+
+
+	public function set_term( $post_id, $data ) {
+
+		foreach ( $data as $key => $value ) {
+			wp_set_object_terms( $post_id, $value, $key );
+		}
 	}
 
 
@@ -53,19 +81,21 @@ class AFCP_Ajax {
 
 	public function validation_thumbnail() {
 
-		$size     = getimagesize( $_FILES['event_thumbnail']['tmp_name'] );
-		$max_size = 800;
-		$type     = $_FILES['event_thumbnail']['type'];
+		if ( ! empty( $_FILES ) ) {
+			$size     = getimagesize( $_FILES['event_thumbnail']['tmp_name'] );
+			$max_size = 800;
+			$type     = $_FILES['event_thumbnail']['type'];
 
-		if ( $size[0] > $max_size || $size[1] > $max_size ) {
-			$image_message = 'Изображение не может быть больше ' . $max_size . 'рх в высоту или ширину';
-			$this->remove_image( $image_message );
-		}
+			if ( $size[0] > $max_size || $size[1] > $max_size ) {
+				$image_message = 'Изображение не может быть больше ' . $max_size . 'рх в высоту или ширину';
+				$this->remove_image( $image_message );
+			}
 
-		if ( 'image/jpeg' !== $type || 'image/png' !== $type ) {
+			if ( 'image/jpeg' !== $type || 'image/png' !== $type ) {
 
-			$image_message = 'Неверный формат файла. Жопускаются только файлы изображений в формате .jpg, .png';
-			$this->remove_image( $image_message );
+				$image_message = 'Неверный формат файла. Жопускаются только файлы изображений в формате .jpg, .png';
+				$this->remove_image( $image_message );
+			}
 		}
 
 	}

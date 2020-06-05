@@ -413,7 +413,7 @@ class AFCP_Shortcode {
 		$field_terms = [];
 
 		foreach ( $terms as $term ) {
-			$field_terms[ $term->term_id ] = $term->name;
+			$field_terms[ $term->slug ] = $term->name;
 		}
 
 		return $field_terms;
