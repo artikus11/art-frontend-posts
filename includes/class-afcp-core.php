@@ -81,8 +81,8 @@ class AFCP_Core {
 			'afcp-script-ajax',
 			'afcp_ajax',
 			[
-				'url' => admin_url( 'admin-ajax.php' ),
-				'nonce' => wp_create_nonce('afcp-ajax-nonce')
+				'url'   => admin_url( 'admin-ajax.php' ),
+				'nonce' => wp_create_nonce( 'afcp-ajax-nonce' ),
 			]
 		);
 
@@ -131,6 +131,7 @@ class AFCP_Core {
 				'menu_name'     => 'Категория мероприятий',
 			],
 			'public'       => true,
+			'show_in_rest' => true,
 			'show_ui'      => true,
 			'query_var'    => true,
 			'rewrite'      => [],
@@ -151,6 +152,7 @@ class AFCP_Core {
 				'menu_name'     => 'Метки мероприятий',
 			],
 			'public'       => true,
+			'show_in_rest' => true,
 			'show_ui'      => true,
 			'query_var'    => true,
 			'rewrite'      => [],

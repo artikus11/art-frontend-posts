@@ -40,6 +40,8 @@ class AFCP_Ajax {
 
 		$this->set_term( $post_id, $event_data['tax_input'] );
 
+		$this->success( 'Событие `' . $post_id . '` успешно создано' );
+
 		wp_die();
 	}
 
@@ -50,12 +52,16 @@ class AFCP_Ajax {
 		require_once( ABSPATH . 'wp-admin/includes/file.php' );
 		require_once( ABSPATH . 'wp-admin/includes/media.php' );
 
-		add_filter( 'upload_mimes', function( $mimes ){
-			return [
-				'jpg|jpeg|jpe' => 'image/jpeg',
-				'png'          => 'image/png',
-			];
-		} );
+		add_filter(
+			'upload_mimes',
+			function ( $mimes ) {
+
+				return [
+					'jpg|jpeg|jpe' => 'image/jpeg',
+					'png'          => 'image/png',
+				];
+			}
+		);
 
 		$attachment_id = media_handle_upload( 'event_thumbnail', $post_id );
 
