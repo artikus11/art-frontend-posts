@@ -29,8 +29,11 @@ class AFCP_Core {
 		require_once AFCP_DIR . 'includes/class-afcp-shortcode.php';
 		new AFCP_Shortcode();
 
-		require_once AFCP_DIR . 'includes/class-afcp-ajax.php';
-		new AFCP_Ajax();
+		//require_once AFCP_DIR . 'includes/class-afcp-ajax.php';
+		//new AFCP_Ajax();
+
+		require_once AFCP_DIR . 'includes/class-afcp-rest.php';
+		new AFCP_Rest();
 
 	}
 
@@ -71,7 +74,7 @@ class AFCP_Core {
 			true
 		);
 
-		wp_register_script(
+		/*wp_register_script(
 			'afcp-script-ajax',
 			AFCP_URI . 'assets/afcp-ajax.js',
 			[ 'jquery' ],
@@ -85,6 +88,23 @@ class AFCP_Core {
 			[
 				'url'   => admin_url( 'admin-ajax.php' ),
 				'nonce' => wp_create_nonce( 'afcp-ajax-nonce' ),
+			]
+		);*/
+
+		wp_register_script(
+			'afcp-script-rest',
+			AFCP_URI . 'assets/afcp-rest.js',
+			[ 'jquery' ],
+			filemtime( AFCP_DIR . 'assets/afcp-rest.js' ),
+			true
+		);
+
+		wp_localize_script(
+			'afcp-script-rest',
+			'afcp_rest',
+			[
+				'url'   => '',
+				'nonce' => '',
 			]
 		);
 
