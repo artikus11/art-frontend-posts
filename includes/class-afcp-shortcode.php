@@ -10,6 +10,7 @@ class AFCP_Shortcode {
 
 	public function shortcode_form() {
 
+		wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'afcp-script' );
 		wp_enqueue_script( 'afcp-script-ajax' );
 		wp_enqueue_script( 'jquery-form' );

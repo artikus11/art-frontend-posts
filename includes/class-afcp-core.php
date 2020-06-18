@@ -37,6 +37,8 @@ class AFCP_Core {
 
 	public function enqueue() {
 
+		wp_enqueue_script( 'jquery' );
+
 		wp_register_style(
 			'afcp-styles',
 			AFCP_URI . 'assets/afcp-style.css',
