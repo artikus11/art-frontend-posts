@@ -4,46 +4,64 @@ class AFCP_Rest {
 
 	public function __construct() {
 
+		add_action( 'rest_api_init', [ $this, 'custom_routes' ] );
+
 	}
 
 
-	public function callback() {
+	public function custom_routes() {
+
+		register_rest_route(
+			'afcp/v1',
+			'/add',
+			[
+				'methods'  => [ 'POST' ],
+				'callback' => [ $this, 'callback_rest' ],
+			]
+		);
+	}
+
+
+	public function callback_rest( WP_REST_Request $request ) {
+
+
+		$thumbnail = $request->get_file_params( 'event_thumbnail' );
 
 		$this->validation();
 
-		$this->validation_thumbnail();
+		$this->validation_thumbnail( $thumbnail );
 
 		$event_data = [
 			'post_type'    => 'event',
 			'post_status'  => 'publish',
-			'post_title'   => sanitize_text_field( $_POST['event_title'] ),
-			'post_content' => wp_kses_post( $_POST['event_descriptions'] ),
+			'post_title'   => sanitize_text_field( $request->get_param( 'event_title' ) ),
+			'post_content' => wp_kses_post( $request->get_param( 'event_descriptions' ) ),
 			'meta_input'   => [
-				'event_date'     => sanitize_text_field( $_POST['event_date'] ),
-				'event_location' => sanitize_text_field( $_POST['event_location'] ),
+				'event_date'     => sanitize_text_field( $request->get_param( 'event_date' ) ),
+				'event_location' => sanitize_text_field( $request->get_param( 'event_location' ) ),
 			],
 			'tax_input'    => [
-				'topics'   => $_POST['event_topics'],
-				'hashtags' => explode( ',', sanitize_text_field( $_POST['event_hashtags'] ) ),
+				'topics'   => $request->get_param( 'event_topics' ),
+				'hashtags' => explode( ',', sanitize_text_field( $request->get_param( 'event_hashtags' ) ) ),
 
 			],
 		];
 
 		$post_id = wp_insert_post( $event_data );
 
-		$this->upload_thumbnail( $post_id );
+		$this->upload_thumbnail( $post_id, $thumbnail );
 
 		$this->set_term( $post_id, $event_data['tax_input'] );
 
-		$this->success( 'Событие `' . $post_id . '` успешно создано' );
-
-		wp_die();
+		return [
+			'message' => 'Событие `' . $post_id . '` успешно создано'
+		];
 	}
 
 
-	public function upload_thumbnail( $post_id ) {
+	public function upload_thumbnail( $post_id, $thumbnail ) {
 
-		if ( empty( $_FILES ) ) {
+		if ( empty( $thumbnail ) ) {
 			return;
 		}
 
@@ -109,10 +127,11 @@ class AFCP_Rest {
 	}
 
 
-	public function validation_thumbnail() {
+	public function validation_thumbnail( $file ) {
 
-		if ( ! empty( $_FILES ) ) {
-			$size     = getimagesize( $_FILES['event_thumbnail']['tmp_name'] );
+
+		if ( ! empty( $file ) ) {
+			$size     = getimagesize( $file['event_thumbnail']['tmp_name'] );
 			$max_size = 800;
 
 			if ( $size[0] > $max_size || $size[1] > $max_size ) {

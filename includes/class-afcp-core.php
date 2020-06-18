@@ -103,8 +103,8 @@ class AFCP_Core {
 			'afcp-script-rest',
 			'afcp_rest',
 			[
-				'url'   => '',
-				'nonce' => '',
+				'root'  => esc_url_raw( rest_url() ),
+				'nonce' => wp_create_nonce( 'wp_rest' ),
 			]
 		);
 
