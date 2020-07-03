@@ -10,7 +10,6 @@ class AFCP_Shortcode {
 
 	public function shortcode_form() {
 
-		wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'afcp-script' );
 		//wp_enqueue_script( 'afcp-script-ajax' );
 		wp_enqueue_script( 'afcp-script-rest' );
@@ -44,61 +43,64 @@ class AFCP_Shortcode {
 
 	public function fields() {
 
-		return [
-			'event_title'        => [
-				'type'        => 'text',
-				'label'       => 'Заголовок мероприятия',
-				'required'    => true,
-				'description' => 'Это обязательное поле. Укажите заголовок мероприятия',
-			],
-			'event_topics'       => [
-				'type'        => 'multiselect',
-				'label'       => 'Категория мероприятия',
-				'input_class' => ['js-multiselect'],
-				'options'     => $this->get_field_terms(),
-				'required'    => true,
-				'description' => 'Выберите нужную категорию',
-			],
-			'event_hashtags'     => [
-				'type'    => 'text',
-				'label'   => 'Метки мероприятия',
-				'description' => 'Укажите метку в виде хештега, в формате #вашаМетка',
-			],
-			'event_descriptions' => [
-				'type'  => 'wysiwyg_editor',
-				'label' => 'Описание мероприятия',
-				'description' => 'Напишите о чем, это мероприятие',
-				'custom_attributes' => [
-					'wpautop'          => 1,
-					'media_buttons'    => 0,
-					'textarea_rows'    => 3,
-					'tabindex'         => 0,
-					'editor_css'       => '<style></style>',
-					'editor_class'     => 'form-field',
-					'teeny'            => 1,
-					'dfw'              => 0,
-					'tinymce'          => 1,
-					'quicktags'        => 0,
-					'drag_drop_upload' => 0,
+		return apply_filters(
+			'afcp_fields',
+			[
+				'event_title'        => [
+					'type'        => 'text',
+					'label'       => 'Заголовок мероприятия',
+					'required'    => true,
+					'description' => 'Это обязательное поле. Укажите заголовок мероприятия',
 				],
-				'value'             => '',
-			],
-			'event_thumbnail'    => [
-				'type'  => 'file',
-				'label' => 'Миниатюра мероприятия',
-			],
-			'event_date'         => [
-				'type'  => 'datepicker',
-				'label' => 'Дата мероприятия',
-				'required'    => true,
-			],
-			'event_location'     => [
-				'type'  => 'text',
-				'label' => 'Место мероприятия',
-				'required'    => true,
-			],
+				'event_topics'       => [
+					'type'        => 'multiselect',
+					'label'       => 'Категория мероприятия',
+					'input_class' => [ 'js-multiselect' ],
+					'options'     => $this->get_field_terms(),
+					'required'    => true,
+					'description' => 'Выберите нужную категорию',
+				],
+				'event_hashtags'     => [
+					'type'        => 'text',
+					'label'       => 'Метки мероприятия',
+					'description' => 'Укажите метку в виде хештега, в формате #вашаМетка',
+				],
+				'event_descriptions' => [
+					'type'              => 'wysiwyg_editor',
+					'label'             => 'Описание мероприятия',
+					'description'       => 'Напишите о чем, это мероприятие',
+					'custom_attributes' => [
+						'wpautop'          => 1,
+						'media_buttons'    => 0,
+						'textarea_rows'    => 3,
+						'tabindex'         => 0,
+						'editor_css'       => '<style></style>',
+						'editor_class'     => 'form-field',
+						'teeny'            => 1,
+						'dfw'              => 0,
+						'tinymce'          => 1,
+						'quicktags'        => 0,
+						'drag_drop_upload' => 0,
+					],
+					'value'             => '',
+				],
+				'event_thumbnail'    => [
+					'type'  => 'file',
+					'label' => 'Миниатюра мероприятия',
+				],
+				'event_date'         => [
+					'type'     => 'datepicker',
+					'label'    => 'Дата мероприятия',
+					'required' => true,
+				],
+				'event_location'     => [
+					'type'     => 'text',
+					'label'    => 'Место мероприятия',
+					'required' => true,
+				],
 
-		];
+			]
+		);
 
 	}
 
@@ -213,43 +215,12 @@ class AFCP_Shortcode {
 
 				break;
 			case 'datepicker':
-				wp_enqueue_script('jquery-ui-datepicker');
-				wp_enqueue_style('jqueryui', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css', false, null );
+				wp_enqueue_script( 'jquery-ui-datepicker' );
+				wp_enqueue_style( 'jqueryui', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css', false, null );
 
-				$field .= '<input type="text" class="datepicker ' . esc_attr( implode( ' ', $args['input_class'] ) ) . '" name="' . esc_attr( $key ) .
-				          '" id="' . esc_attr( $args['id'] ) . '" placeholder="' . esc_attr( $args['placeholder'] ) . '"  value="' . esc_attr( $value ) . '" ' .
+				$field .= '<input type="text" class="datepicker ' . esc_attr( implode( ' ', $args['input_class'] ) ) . '" name="' . esc_attr( $key ) . '" id="' .
+				          esc_attr( $args['id'] ) . '" placeholder="' . esc_attr( $args['placeholder'] ) . '"  value="' . esc_attr( $value ) . '" ' .
 				          implode( ' ', $custom_attributes ) . ' />';
-
-				$field .= "<script>
-		jQuery(document).ready(function($){
-			'use strict';
-			// настройки по умолчанию. Их можно добавить в имеющийся js файл, 
-			// если datepicker будет использоваться повсеместно на проекте и предполагается запускать его с разными настройками
-			$.datepicker.setDefaults({
-				closeText: 'Закрыть',
-				prevText: '<Пред',
-				nextText: 'След>',
-				currentText: 'Сегодня',
-				monthNames: ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
-				monthNamesShort: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
-				dayNames: ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'],
-				dayNamesShort: ['вск','пнд','втр','срд','чтв','птн','сбт'],
-				dayNamesMin: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
-				weekHeader: 'Нед',
-				dateFormat: 'dd-mm-yy',
-				firstDay: 1,
-				showAnim: 'slideDown',
-				isRTL: false,
-				showMonthAfterYear: false,
-				yearSuffix: ''
-			} );
-
-			// Инициализация
-			$('input.datepicker').datepicker({ dateFormat: 'dd.mm.yy' });
-			// можно подключить datepicker с доп. настройками так:
-        
-		});
-		</script>";
 
 				break;
 			case 'select':
@@ -358,16 +329,7 @@ class AFCP_Shortcode {
 					<?php echo $editor; ?>
 
 				</div>
-				<script>
-						 jQuery( function( $ ) {
-							 $( document ).on( 'tinymce-editor-setup', function( e, ed ) {
-								 ed.on( 'NodeChange', function( e ) {
-									 $( '#' + field_editor.key ).html( wp.editor.getContent( field_editor.key ) );
-								 } );
-							 } );
-						 } );
 
-				</script>
 				<?php
 				break;
 		}

@@ -9,6 +9,9 @@ class AFCP_Rest {
 	}
 
 
+	/**
+	 * @todo требуется сделать проверку на нонсу
+	 */
 	public function custom_routes() {
 
 		register_rest_route(
@@ -25,7 +28,7 @@ class AFCP_Rest {
 	public function callback_rest( WP_REST_Request $request ) {
 
 
-		$thumbnail = $request->get_file_params( 'event_thumbnail' );
+		$thumbnail = $request->get_file_params();
 
 		$this->validation();
 
@@ -54,7 +57,7 @@ class AFCP_Rest {
 		$this->set_term( $post_id, $event_data['tax_input'] );
 
 		return [
-			'message' => 'Событие `' . $post_id . '` успешно создано'
+			'message' => 'Событие `' . $post_id . '` успешно создано',
 		];
 	}
 
